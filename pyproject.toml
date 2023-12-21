@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "stripe-project"
+version = "0.1.0"
+description = ""
+authors = ["Uliana Semyonova <i@ulianasemyonova.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^5.0"
+psycopg2 = "^2.9.9"
+djangorestframework = "^3.14.0"
+python-dotenv = "^1.0.0"
+stripe = "^7.9.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
