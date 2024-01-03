@@ -1,0 +1,39 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<div class="container text-center">
+  <div class="row justify-content-md-center">
+    <div class="card align-self-center" style="width: 40rem;">
+      <div class="card-body">
+        <h4 class="card-title"> {{ item.name }}</h4>
+        <h6> {{ item.price }} </h6>
+        {% if item.text %}
+            <p class="card-text">{{ item.text }}</p>
+        {% endif %}
+        <button class="btn btn-primary" type="button" id="checkout-button">Buy</button>
+        <script>
+          const stripe = Stripe('{{ public_key }}');
+          const checkoutButton = document.getElementById('checkout-button');
+          checkoutButton.addEventListener('click', function() {
+            fetch("{% url 'main:buy' item.pk %}", {
+                          method: "GET",
+                          })
+            .then(function(response) {
+                return response.json();
+                })
+            .then(function(session) {
+                return stripe.redirectToCheckout({ sessionId: session.session_id });
+                })
+            .then(function(result) {
+                if (result.error) {
+                    alert(result.error.message);
+                }
+                });
+            });
+        </script>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
