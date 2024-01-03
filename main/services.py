@@ -13,7 +13,7 @@ def create_stripe_session(price, name):
 
     session = stripe.checkout.Session.create(
       success_url="https://example.com/success",
-      line_items=[{"price": price_id, "quantity": 2}],
+      line_items=[{"price": price_id, "quantity": 1}],
       mode="payment",
     )
 
