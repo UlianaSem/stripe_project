@@ -47,6 +47,12 @@ class ItemOrder(models.Model):
     def __str__(self):
         return f"{self.order}: {self.item}, {self.quantity}"
 
+    @property
+    def full_price(self):
+        """Высчитывает полную стоимость продукта в заказе"""
+        price = self.item.price
+        return round(price * self.quantity, 2)
+
 
 class Order(models.Model):
     """Модель Order, в которой можно объединить несколько Items"""
@@ -58,7 +64,16 @@ class Order(models.Model):
     discount = models.ForeignKey(Discount, verbose_name="скидка", null=True, blank=True, on_delete=models.SET_NULL)
 
     def __str__(self):
-        return self.items
+        return f"{self.pk}"
+
+    @property
+    def order_full_price(self):
+        """Высчитывает полную стоимость заказа"""
+        items = self.items.through.objects.filter(order=self)
+        prices = [
+            round(item.full_price, 2) for item in items
+        ]
+        return round(sum(prices), 2)
 
     class Meta:
         verbose_name = 'заказ'

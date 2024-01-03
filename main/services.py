@@ -4,17 +4,47 @@ from django.conf import settings
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
-def create_stripe_session(price, name):
+def create_stripe_session(price, name, tax=None, discount=None):
     price_id = stripe.Price.create(
         currency="rub",
         unit_amount=price,
         product_data={"name": name},
     ).id
 
-    session = stripe.checkout.Session.create(
-      success_url="https://example.com/success",
-      line_items=[{"price": price_id, "quantity": 1}],
-      mode="payment",
-    )
+    body = {
+        "success_url": "https://example.com/success",
+        "line_items": [{"price": price_id, "quantity": 1}],
+        "mode": "payment",
+            }
+
+    if discount:
+        body["discounts"] = [{"coupon": discount}]
+
+    if tax:
+        body["line_items"][0]["tax_rates"] = [tax]
+
+    session = stripe.checkout.Session.create(**body)
 
     return session.id
+
+
+def create_stripe_discount(percent):
+    discount = stripe.Coupon.create(
+        duration="repeating",
+        duration_in_months=3,
+        percent_off=percent,
+    )
+
+    return discount.id
+
+
+def create_stripe_tax(percent):
+    tax = stripe.TaxRate.create(
+        display_name="VAT",
+        description="VAT",
+        percentage=percent,
+        jurisdiction="RU",
+        inclusive=False,
+    )
+
+    return tax.id

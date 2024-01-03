@@ -1,12 +1,12 @@
 from django.conf import settings
 from rest_framework import status
-from rest_framework.generics import RetrieveAPIView, get_object_or_404
+from rest_framework.generics import RetrieveAPIView, get_object_or_404, CreateAPIView
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from main.models import Item
-from main.services import create_stripe_session
+from main.models import Item, Order
+from main.services import create_stripe_session, create_stripe_tax, create_stripe_discount
 
 
 class ItemDetailView(RetrieveAPIView):
@@ -26,4 +26,21 @@ class BuyCreate(APIView):
         item = get_object_or_404(Item, pk=pk)
 
         session = create_stripe_session(price=int(item.price), name=item.name)
+        return Response(data={'session_id': session}, status=status.HTTP_200_OK)
+
+
+class OrderBuyCreate(APIView):
+
+    def get(self, request, pk, format=None):
+        order = get_object_or_404(Order, pk=pk)
+
+        tax, discount = None, None
+
+        if order.tax:
+            tax = create_stripe_tax(order.tax.value)
+
+        if order.discount:
+            discount = create_stripe_discount(order.discount.value)
+
+        session = create_stripe_session(price=int(order.order_full_price), name=order.pk, tax=tax, discount=discount)
         return Response(data={'session_id': session}, status=status.HTTP_200_OK)
