@@ -4,9 +4,9 @@ from django.conf import settings
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
-def create_stripe_session(price, name, tax=None, discount=None):
+def create_stripe_session(price, name, tax=None, discount=None, currency="rub"):
     price_id = stripe.Price.create(
-        currency="rub",
+        currency=currency,
         unit_amount=price,
         product_data={"name": name},
     ).id

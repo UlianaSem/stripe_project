@@ -1,6 +1,6 @@
 from django.conf import settings
 from rest_framework import status
-from rest_framework.generics import RetrieveAPIView, get_object_or_404, CreateAPIView
+from rest_framework.generics import RetrieveAPIView, get_object_or_404
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -25,7 +25,7 @@ class BuyCreate(APIView):
     def get(self, request, pk, format=None):
         item = get_object_or_404(Item, pk=pk)
 
-        session = create_stripe_session(price=int(item.price), name=item.name)
+        session = create_stripe_session(price=int(item.price), name=item.name, currency=item.currency)
         return Response(data={'session_id': session}, status=status.HTTP_200_OK)
 
 
