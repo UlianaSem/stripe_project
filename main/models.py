@@ -1,10 +1,17 @@
 from django.db import models
+from django.db.models import TextChoices
+
+
+class CurrencyChoice(TextChoices):
+    rub = "rub"
+    usd = "usd"
 
 
 class Item(models.Model):
     name = models.CharField(max_length=255, verbose_name='название')
     description = models.TextField(verbose_name='описание', null=True, blank=True)
     price = models.FloatField(verbose_name='цена')
+    currency = models.CharField(max_length=3, choices=CurrencyChoice)
 
     def __str__(self):
         return f'{self.name}, цена {self.price}'
