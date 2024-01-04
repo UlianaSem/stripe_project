@@ -1,6 +1,8 @@
 from django.db import models
 from django.db.models import TextChoices
 
+from main.utils import get_exchange_rate
+
 
 class CurrencyChoice(TextChoices):
     rub = "rub"
@@ -57,7 +59,13 @@ class ItemOrder(models.Model):
     @property
     def full_price(self):
         """Высчитывает полную стоимость продукта в заказе"""
-        price = self.item.price
+        if self.item.currency == "usd":
+            rate = get_exchange_rate(self.item.currency)
+            price = round(self.item.price / rate, 2)
+
+        else:
+            price = self.item.price
+
         return round(price * self.quantity, 2)
 
 
