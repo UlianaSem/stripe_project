@@ -28,7 +28,7 @@ class Discount(models.Model):
     value = models.FloatField(verbose_name='размер скидки')
 
     def __str__(self):
-        return self.value
+        return f'{self.value}'
 
     class Meta:
         verbose_name = 'скидка'
@@ -40,7 +40,7 @@ class Tax(models.Model):
     value = models.FloatField(verbose_name='размер налога')
 
     def __str__(self):
-        return self.value
+        return f'{self.value}'
 
     class Meta:
         verbose_name = 'налог'
@@ -67,6 +67,10 @@ class ItemOrder(models.Model):
             price = self.item.price
 
         return round(price * self.quantity, 2)
+
+    class Meta:
+        verbose_name = 'товар в заказе'
+        verbose_name_plural = 'товары в заказах'
 
 
 class Order(models.Model):
