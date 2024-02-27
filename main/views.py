@@ -25,7 +25,9 @@ class BuyCreate(APIView):
     def get(self, request, pk, format=None):
         item = get_object_or_404(Item, pk=pk)
 
-        session = create_stripe_session(price=int(item.price), name=item.name, currency=item.currency)
+        path = f"{self.request.scheme}://{self.request.META.get('HTTP_HOST')}/"
+
+        session = create_stripe_session(price=int(item.price), name=item.name, currency=item.currency, path=path)
         return Response(data={'session_id': session}, status=status.HTTP_200_OK)
 
 
@@ -34,6 +36,7 @@ class OrderBuyCreate(APIView):
     def get(self, request, pk, format=None):
         order = get_object_or_404(Order, pk=pk)
 
+        path = f"{self.request.scheme}://{self.request.META.get('HTTP_HOST')}/"
         tax, discount = None, None
 
         if order.tax:
@@ -42,5 +45,21 @@ class OrderBuyCreate(APIView):
         if order.discount:
             discount = create_stripe_discount(order.discount.value)
 
-        session = create_stripe_session(price=int(order.order_full_price), name=order.pk, tax=tax, discount=discount)
+        session = create_stripe_session(
+            price=int(order.order_full_price), name=order.pk, tax=tax, discount=discount, path=path
+        )
         return Response(data={'session_id': session}, status=status.HTTP_200_OK)
+
+
+class GetSuccessResponse(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+
+    def get(self, request, *args, **kwargs):
+        return Response(template_name='main/success.html')
+
+
+class GetCancelResponse(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+
+    def get(self, request, *args, **kwargs):
+        return Response(template_name='main/cancel.html')

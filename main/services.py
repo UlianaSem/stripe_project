@@ -4,7 +4,7 @@ from django.conf import settings
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
-def create_stripe_session(price, name, tax=None, discount=None, currency="rub"):
+def create_stripe_session(price, name, path, tax=None, discount=None, currency="rub"):
     price_id = stripe.Price.create(
         currency=currency,
         unit_amount=price,
@@ -12,7 +12,8 @@ def create_stripe_session(price, name, tax=None, discount=None, currency="rub"):
     ).id
 
     body = {
-        "success_url": "https://example.com/success",
+        "success_url": f"{path}success/",
+        "cancel_url": f"{path}cancel/",
         "line_items": [{"price": price_id, "quantity": 1}],
         "mode": "payment",
             }
