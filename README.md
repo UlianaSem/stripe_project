@@ -29,6 +29,12 @@
 4. Соберите образ с помощью команды `docker-compose build`
 5. Запустите контейнеры с помощью команды `docker-compose up`
 
+## Эндпоинты
+
+1. `/item/{id}/` для получения информации о выбранном товаре 
+2. `/buy/{id}/` для перехода на оплату товара
+3. `/buy_order/{id}/` для оплаты заказа (реализован без редиректа на Checkout форму)
+
 ## Файл .env.example
 
 1. `DATABASES_NAME, DATABASES_USER, DATABASES_PASSWORD, DATABASES_HOST` - данные для подключения к БД
