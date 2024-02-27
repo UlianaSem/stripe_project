@@ -36,6 +36,12 @@
 3. `STRIPE_SECRET_KEY, STRIPE_PUBLIC_KEY` - ключи для работы со Stripe
 4. `EXCHANGE_RATE_API_KEY` - токен Apilayer
 
+## Доступ в админку
+
+`username=admin`
+
+`password=admin`
+
 ## Авторы
 
 UlianaSem

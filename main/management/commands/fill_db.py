@@ -12,18 +12,20 @@ class Command(BaseCommand):
     ]
 
     def handle(self, *args, **options):
+        items = Item.objects.all()
 
-        item_1 = Item.objects.create(**self.items[0])
-        item_2 = Item.objects.create(**self.items[1])
-        item_3 = Item.objects.create(**self.items[2])
+        if not items:
+            item_1 = Item.objects.create(**self.items[0])
+            item_2 = Item.objects.create(**self.items[1])
+            item_3 = Item.objects.create(**self.items[2])
 
-        tax = Tax.objects.create(value=13)
-        discount = Discount.objects.create(value=25)
+            tax = Tax.objects.create(value=13)
+            discount = Discount.objects.create(value=25)
 
-        order_1 = Order.objects.create()
-        order_2 = Order.objects.create(tax=tax, discount=discount)
+            order_1 = Order.objects.create()
+            order_2 = Order.objects.create(tax=tax, discount=discount)
 
-        ItemOrder.objects.create(item=item_1, order=order_1, quantity=3)
-        ItemOrder.objects.create(item=item_2, order=order_1, quantity=2)
+            ItemOrder.objects.create(item=item_1, order=order_1, quantity=3)
+            ItemOrder.objects.create(item=item_2, order=order_1, quantity=2)
 
-        ItemOrder.objects.create(item=item_3, order=order_2, quantity=2)
+            ItemOrder.objects.create(item=item_3, order=order_2, quantity=2)
